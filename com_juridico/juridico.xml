@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.1" method="upgrade">
+	<name>com_juridico</name>
+	<creationDate>Jun 2022</creationDate>
+	<author>Alex Barreto</author>
+	<authorEmail>alexssb2003@gmail.com</authorEmail>
+	<authorUrl></authorUrl>
+	<copyright>Copyright Info</copyright>
+	<license>License Info</license>
+	<version>0.0.1</version>
+	<description>Ações jurídicas</description>
+    <install>
+		<sql>
+			<file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+		</sql>
+	</install>
+	<files folder="site">
+		<filename>index.html</filename>
+		<filename>juridico.php</filename>
+		<filename>controller.php</filename>
+		<folder>models</folder>
+		<folder>views</folder>
+	</files>
+	<administration>
+		<menu link='index.php?option=com_juridico'>Jurídico</menu>
+		<files folder="admin">
+			<filename>index.html</filename>
+			<filename>controller.php</filename>
+			<filename>juridico.php</filename>
+			<filename>config.xml</filename>
+            <folder>controllers</folder>
+			<folder>sql</folder>
+            <folder>models</folder>
+			<folder>helpers</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files>
+	</administration>
+
+</extension>
