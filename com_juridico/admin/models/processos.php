@@ -39,7 +39,10 @@ class JuridicoModelProcessos extends JModelList
                 $query->where('a.id = ' . (int) substr($search, 3));
             } else {
                 $search = $db->quote('%' . str_replace(' ', '%', $db->escape(trim($search), true) . '%'));
-                $query->where('(a.cpf LIKE ' . $search . ' OR a.processo LIKE ' . $search . ' OR a.valor LIKE ' . $search . ' OR a.publicado_em LIKE ' . $search . ')');
+                $subquery = sprintf('(a.cpf LIKE %s OR a.nome_acao LIKE %s OR a.valor_beneficiario LIKE %s OR a.publicado_em LIKE %s OR a.numero_acao LIKE %s OR a.valor_executado LIKE %s OR a.valor_honorario LIKE %s)',
+                    $search, $search, $search, $search, $search, $search, $search);
+
+                $query->where($subquery);
             }
         }
 
@@ -74,16 +77,27 @@ class JuridicoModelProcessos extends JModelList
 
     public function syncronize($data)
 	{
-		$valor = str_ireplace('.', '', $data[2]);
-		$valor = str_ireplace(',', '.', $valor);
-		$valor = str_ireplace('R$', '', $valor);
+        $valorExecutado = str_ireplace('.', '', $data[3]);
+        $valorExecutado = str_ireplace(',', '.', $valorExecutado);
+        $valorExecutado = str_ireplace('R$', '', $valorExecutado);
+
+        $valorHonorario = str_ireplace('.', '', $data[4]);
+        $valorHonorario = str_ireplace(',', '.', $valorHonorario);
+        $valorHonorario = str_ireplace('R$', '', $valorHonorario);
+
+		$valorBeneficiario = str_ireplace('.', '', $data[5]);
+		$valorBeneficiario = str_ireplace(',', '.', $valorBeneficiario);
+		$valorBeneficiario = str_ireplace('R$', '', $valorBeneficiario);
 
 		$bind = [
 			'cpf' => $data[0],
-			'processo' => $data[1],
-			'valor' => $valor,
+            'numero_acao' => $data[1],
+            'nome_acao' => $data[2],
+			'valor_executado' => $valorExecutado,
+            'valor_honorario' => $valorHonorario,
+            'valor_beneficiario' => $valorBeneficiario,
 			'publicado_em' => date("Y-m-d H-i-s"),
-			'ativo' => empty($data['3']) ? 0 : 1
+			'ativo' => empty($data['6']) ? 0 : 1
 		];
 
         $isItem = $this->item($data[0]);

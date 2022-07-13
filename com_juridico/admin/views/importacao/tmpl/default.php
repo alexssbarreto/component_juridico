@@ -19,54 +19,72 @@ JFactory::getDocument()->addScriptDeclaration('
 ?>
 
 <div class="row-fluid">
-    <div class="span8">
+    <div class="span12">
         <div class="tree-holder">
             <div class="file" style="padding: 20px">
-                <form enctype="multipart/form-data" action="<?php echo JRoute::_('index.php?option=com_juridico&view=importacao'); ?>" method="POST" name="adminForm" id="import-form" class="form-validate">
+                <form enctype="multipart/form-data"
+                      action="<?php echo JRoute::_('index.php?option=com_juridico&view=importacao'); ?>" method="POST"
+                      name="adminForm" id="import-form" class="form-validate">
                     <label><strong>Selecione o arquivo para processamento:</strong></label>
                     <input type="file" name="file" accept="text/csv" class="file" required>
 
-                    <input type="hidden" name="task" value="" />
-                    <input type="hidden" name="boxchecked" value="0" />
+                    <input type="hidden" name="task" value=""/>
+                    <input type="hidden" name="boxchecked" value="0"/>
                     <?php echo JHtml::_('form.token'); ?>
                 </form>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="span4">
+<div class="row-fluid">
+    <div class="span12">
         <div class="alert page-header">
             <h4 class="card-title">Orientações</h4>
 
             <ul>
                 <li>O arquivo deve estar no formato CSV, separado por (;);</li>
                 <li>A sequência das colunas deve estar conforme o modelo abaixo;</li>
-                <li>A coluna ativo serve para tornar público o processo para o filiado após a importação (0 para inativo; 1 para ativo).</li>
+                <li>A coluna ativo serve para tornar público o processo para o filiado após a importação (0 para
+                    inativo; 1 para ativo).
+                </li>
             </ul>
 
             <table class="table">
                 <tr>
                     <th>CPF</th>
-                    <th>AÇÃO</th>
-                    <th>VALOR</th>
+                    <th>NÚMERO DA AÇÃO</th>
+                    <th>NOME DA AÇÃO</th>
+                    <th>VALOR EXECUTADO</th>
+                    <th>HONORÁRIOS</th>
+                    <th>VALOR BENEFICIÁRIO</th>
                     <th>ATIVO</th>
                 </tr>
                 <tr>
                     <td>11111111111</td>
-                    <td>Processo</td>
-                    <td>R$ 111,00</td>
+                    <td>0000000-00.0000.0.00.0000</td>
+                    <td>LICENÇA PRÊMIO</td>
+                    <td>R$ 000.000,00</td>
+                    <td>R$ 000.000,00</td>
+                    <td>R$ 000.000,00</td>
                     <td>1</td>
                 </tr>
                 <tr>
                     <td>22222222222</td>
-                    <td>Processo</td>
-                    <td>R$ 222,00</td>
-                    <td>0</td>
+                    <td>0000000-00.0000.0.00.0000</td>
+                    <td>LICENÇA PRÊMIO</td>
+                    <td>R$ 000.000,00</td>
+                    <td>R$ 000.000,00</td>
+                    <td>R$ 000.000,00</td>
+                    <td>1</td>
                 </tr>
                 <tr>
                     <td>33333333333</td>
-                    <td>Processo</td>
-                    <td>R$ 111,00</td>
+                    <td>0000000-00.0000.0.00.0000</td>
+                    <td>LICENÇA PRÊMIO</td>
+                    <td>R$ 000.000,00</td>
+                    <td>R$ 000.000,00</td>
+                    <td>R$ 000.000,00</td>
                     <td>1</td>
                 </tr>
             </table>

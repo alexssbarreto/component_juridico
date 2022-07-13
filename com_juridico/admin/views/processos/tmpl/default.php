@@ -43,16 +43,19 @@ if ($saveOrder) {
                         <th width="1%" class="nowrap center hidden-phone">
                             <?php echo JHtml::_('searchtools.sort', 'Id', 'a.id', $listDirn, $listOrder); ?>
                         </th>
-                        <th width="25%"><?php echo JHtml::_('searchtools.sort', 'CPF', 'a.cpf', 'a.cpf', null); ?></th>
-                        <th><?php echo JHtml::_('searchtools.sort', 'Ação', 'a.processo', $listDirn, $listOrder); ?></th>
-                        <th><?php echo JHtml::_('searchtools.sort', 'Valor', 'a.valor', $listDirn, $listOrder); ?></th>
-                        <th width="20%"><?php echo JHtml::_('searchtools.sort', 'Publicado em', 'a.publicado_em', $listDirn, $listOrder); ?></th>
+                        <th width="10%"><?php echo JHtml::_('searchtools.sort', 'CPF', 'a.cpf', 'a.cpf', null); ?></th>
+                        <th><?php echo JHtml::_('searchtools.sort', 'Nº da Ação', 'a.numero_acao', $listDirn, $listOrder); ?></th>
+                        <th><?php echo JHtml::_('searchtools.sort', 'Ação', 'a.nome_acao', $listDirn, $listOrder); ?></th>
+                        <th><?php echo JHtml::_('searchtools.sort', 'Valor executado', 'a.valor_executado', $listDirn, $listOrder); ?></th>
+                        <th><?php echo JHtml::_('searchtools.sort', 'Honorários 7%', 'a.valor_honorario', $listDirn, $listOrder); ?></th>
+                        <th><?php echo JHtml::_('searchtools.sort', 'Valor beneficiario', 'a.valor_beneficiario', $listDirn, $listOrder); ?></th>
+                        <th width="10%"><?php echo JHtml::_('searchtools.sort', 'Publicado em', 'a.publicado_em', $listDirn, $listOrder); ?></th>
                         <th width="5%"><?php echo JHtml::_('searchtools.sort', 'Ativo', 'a.ativo', $listDirn, $listOrder); ?></th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
-                        <td colspan="7"><?php echo $this->pagination->getListFooter(); ?></td>
+                        <td colspan="10"><?php echo $this->pagination->getListFooter(); ?></td>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -64,8 +67,11 @@ if ($saveOrder) {
                                 </td>
                                 <td><?php echo $row->id; ?></td>
                                 <td><?php echo $row->cpf; ?></td>
-                                <td><?php echo $row->processo; ?></td>
-                                <td><?php echo 'R$ ' . number_format($row->valor,2,",","."); ?></td>
+                                <td><?php echo $row->numero_acao; ?></td>
+                                <td><?php echo $row->nome_acao; ?></td>
+                                <td><?php echo 'R$ ' . number_format($row->valor_executado,2,",","."); ?></td>
+                                <td><?php echo 'R$ ' . number_format($row->valor_honorario,2,",","."); ?></td>
+                                <td><?php echo 'R$ ' . number_format($row->valor_beneficiario,2,",","."); ?></td>
                                 <td align="center"><?php echo JHtml::_('date', $row->publicado_em, JText::_('DATE_FORMAT_LC4')); ?></td>
                                 <td align="center">
                                     <?php if ($row->ativo): ?>

@@ -97,8 +97,8 @@ class JuridicoControllerProcesso extends JControllerAdmin
 	 */
 	private function validateTotalColumns()
 	{
-		if (count($this->processos[1]) != 4) {
-			throw new Exception('Colunas do arquivo inválido. O arquivo deve conter 4 colunas [CPF; PROCESSO; VALOR, ATIVO]');
+		if (count($this->processos[1]) < 6) {
+			throw new Exception('Colunas do arquivo inválido. O arquivo deve conter 7 colunas [CPF; Nº AÇÃO; NOME AÇÃO; VALOR EXECUTADO; VALOR HONORÁRIOS; VALOR BENEFICIÁRIO; ATIVO]');
 		}
 	}
 
@@ -119,11 +119,20 @@ class JuridicoControllerProcesso extends JControllerAdmin
 				$errors[] = sprintf("Linha: %s, coluna: CPF não preenchida.", $index);
 			}
 			if (empty($processo[1])) {
-				$errors[] = sprintf("Linha: %s, coluna: PROCESSO não preenchida.", $index);
+				$errors[] = sprintf("Linha: %s, coluna: Nº da Ação não preenchida.", $index);
 			}
 			if (empty($processo[2])) {
-				$errors[] = sprintf("Linha: %s, coluna: VALOR não preenchida.", $index);
+				$errors[] = sprintf("Linha: %s, coluna: Nome da Ação não preenchida.", $index);
 			}
+            if (empty($processo[3])) {
+                $errors[] = sprintf("Linha: %s, coluna: Valor Executado não preenchido.", $index);
+            }
+            if (empty($processo[4])) {
+                $errors[] = sprintf("Linha: %s, coluna: Valor dos Honorários não preenchido.", $index);
+            }
+            if (empty($processo[5])) {
+                $errors[] = sprintf("Linha: %s, coluna: Valor do Beneficiário não preenchido.", $index);
+            }
 			if (!$model->hasUsuario($processo[0])) {
 				$errors[] = sprintf("Linha: %s, coluna: CPF: %s não está cadastrado no site, veja com o Administrativo.", $index, $processo[0]);
 			}
