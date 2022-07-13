@@ -19,6 +19,7 @@
 		<filename>juridico.php</filename>
 		<filename>controller.php</filename>
 		<folder>models</folder>
+		<folder>tables</folder>
 		<folder>views</folder>
 	</files>
 	<administration>
