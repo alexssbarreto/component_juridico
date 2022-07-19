@@ -1,5 +1,6 @@
 <?php
 
+ini_set("auto_detect_line_endings", true);
 defined('_JEXEC') or die;
 
 use Joomla\Utilities\ArrayHelper;
