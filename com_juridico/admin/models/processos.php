@@ -60,23 +60,23 @@ class JuridicoModelProcessos extends JModelList
     }
 
     public function publish(&$pks, $value = 1)
-	{
-	    $updateNulls = true;
+    {
+        $updateNulls = true;
 
-		foreach ($pks as $i => $pk) {
-		    $object = new stdClass();
-		    
-		    $object->id = $pk;
-		    $object->ativo = $value;
-		    
-		    JFactory::getDbo()->updateObject('#__processo', $object, 'id', $updateNulls);
-		}
+        foreach ($pks as $i => $pk) {
+            $object = new stdClass();
 
-		return true;
-	}
+            $object->id = $pk;
+            $object->ativo = $value;
+
+            JFactory::getDbo()->updateObject('#__processo', $object, 'id', $updateNulls);
+        }
+
+        return true;
+    }
 
     public function syncronize($data)
-	{
+    {
         $valorExecutado = str_ireplace('.', '', $data[3]);
         $valorExecutado = str_ireplace(',', '.', $valorExecutado);
         $valorExecutado = str_ireplace('R$', '', $valorExecutado);
@@ -85,20 +85,25 @@ class JuridicoModelProcessos extends JModelList
         $valorHonorario = str_ireplace(',', '.', $valorHonorario);
         $valorHonorario = str_ireplace('R$', '', $valorHonorario);
 
-		$valorBeneficiario = str_ireplace('.', '', $data[5]);
-		$valorBeneficiario = str_ireplace(',', '.', $valorBeneficiario);
-		$valorBeneficiario = str_ireplace('R$', '', $valorBeneficiario);
+        $valorBeneficiario = str_ireplace('.', '', $data[5]);
+        $valorBeneficiario = str_ireplace(',', '.', $valorBeneficiario);
+        $valorBeneficiario = str_ireplace('R$', '', $valorBeneficiario);
 
-		$bind = [
-			'cpf' => $data[0],
+        $ativo = 1;
+        if (isset($data['6']) && $data[6] == '0') {
+            $ativo = 0;
+        }
+
+        $bind = [
+            'cpf' => $data[0],
             'numero_acao' => $data[1],
             'nome_acao' => $data[2],
-			'valor_executado' => $valorExecutado,
+            'valor_executado' => $valorExecutado,
             'valor_honorario' => $valorHonorario,
             'valor_beneficiario' => $valorBeneficiario,
-			'publicado_em' => date("Y-m-d H-i-s"),
-			'ativo' => empty($data['6']) ? 0 : 1
-		];
+            'publicado_em' => date("Y-m-d H-i-s"),
+            'ativo' => $ativo
+        ];
 
         $isItem = $this->item($data[0]);
 
@@ -107,10 +112,10 @@ class JuridicoModelProcessos extends JModelList
             $this->inative($isItem);
         }
 
-		$table = $this->getTable();
-		$table->bind($bind);
-		$table->store();
-	}
+        $table = $this->getTable();
+        $table->bind($bind);
+        $table->store();
+    }
 
     public function item($cpf)
     {
@@ -128,18 +133,18 @@ class JuridicoModelProcessos extends JModelList
     }
 
     public function inative($bind)
-	{
-		$table = $this->getTable();
-		$table->bind($bind);
-		$table->store();
-	}
+    {
+        $table = $this->getTable();
+        $table->bind($bind);
+        $table->store();
+    }
 
     public function getTable($name = 'Processo', $prefix = 'JuridicoTable', $options = array())
-	{
-		if (strpos(JPATH_COMPONENT, 'com_juridico') === false) {
-			$this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_juridico/tables');
-		}
+    {
+        if (strpos(JPATH_COMPONENT, 'com_juridico') === false) {
+            $this->addTablePath(JPATH_ADMINISTRATOR . '/components/com_juridico/tables');
+        }
 
-		return JTable::getInstance($name, $prefix, $options);
-	}
+        return JTable::getInstance($name, $prefix, $options);
+    }
 }
