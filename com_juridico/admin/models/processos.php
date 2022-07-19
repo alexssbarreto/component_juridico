@@ -105,11 +105,13 @@ class JuridicoModelProcessos extends JModelList
             'ativo' => $ativo
         ];
 
-        $isItem = $this->item($data[0]);
+        $isItem = $this->item($data[0], $data[1]);
 
-        if ($isItem) {
-            $isItem->ativo = 0;
-            $this->inative($isItem);
+        if (count($isItem)) {
+            foreach ($isItem as $item) {
+                $item->ativo = 0;
+                $this->inative($item);
+            }
         }
 
         $table = $this->getTable();
@@ -117,7 +119,7 @@ class JuridicoModelProcessos extends JModelList
         $table->store();
     }
 
-    public function item($cpf)
+    public function item($cpf, $numeroAcao)
     {
         $db = JFactory::getDbo();
         $query = $db->getQuery(true);
@@ -126,10 +128,12 @@ class JuridicoModelProcessos extends JModelList
         $query->select('*')->from($db->quoteName('#__processo') . ' AS a');
         $search = $db->quote($db->escape(trim($cpf), true));
         $query->where('a.cpf = ' . $search);
+        $query->where('a.numero_acao = ' . $db->quote($db->escape(trim($numeroAcao), true)));
+        $query->where('a.ativo = ' . 1);
 
         $db->setQuery($query);
 
-        return $db->loadObject();
+        return $db->loadObjectList();
     }
 
     public function inative($bind)

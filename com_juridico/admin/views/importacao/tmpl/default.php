@@ -45,9 +45,6 @@ JFactory::getDocument()->addScriptDeclaration('
             <ul>
                 <li>O arquivo deve estar no formato CSV, separado por (;);</li>
                 <li>A sequência das colunas deve estar conforme o modelo abaixo;</li>
-                <li>A coluna ativo serve para tornar público o processo para o filiado após a importação (0 para
-                    inativo; 1 para ativo).
-                </li>
             </ul>
 
             <table class="table">
@@ -58,7 +55,6 @@ JFactory::getDocument()->addScriptDeclaration('
                     <th>VALOR EXECUTADO</th>
                     <th>HONORÁRIOS</th>
                     <th>VALOR BENEFICIÁRIO</th>
-                    <th>ATIVO</th>
                 </tr>
                 <tr>
                     <td>11111111111</td>
@@ -67,7 +63,6 @@ JFactory::getDocument()->addScriptDeclaration('
                     <td>R$ 000.000,00</td>
                     <td>R$ 000.000,00</td>
                     <td>R$ 000.000,00</td>
-                    <td>1</td>
                 </tr>
                 <tr>
                     <td>22222222222</td>
@@ -76,7 +71,6 @@ JFactory::getDocument()->addScriptDeclaration('
                     <td>R$ 000.000,00</td>
                     <td>R$ 000.000,00</td>
                     <td>R$ 000.000,00</td>
-                    <td>1</td>
                 </tr>
                 <tr>
                     <td>33333333333</td>
@@ -85,7 +79,6 @@ JFactory::getDocument()->addScriptDeclaration('
                     <td>R$ 000.000,00</td>
                     <td>R$ 000.000,00</td>
                     <td>R$ 000.000,00</td>
-                    <td>1</td>
                 </tr>
             </table>
         </div>
