@@ -50,11 +50,10 @@ defined('_JEXEC') or die('Restricted Access');
         td:nth-of-type(3):before { content: "Valor executado"; }
         td:nth-of-type(4):before { content: "Honorário 7%"; }
         td:nth-of-type(5):before { content: "Valor Beneficiário"; }
-        td:nth-of-type(6):before { content: "Publicado em"; }
 </style>
 
 <div class="span12">
-    <h1>Meus Processos</h1>
+    <h1>Meus Cálculos</h1>
     <h4 style="color: #9E9E9E"><?php echo $this->name ?></h4>
 </div>
 
@@ -67,7 +66,6 @@ defined('_JEXEC') or die('Restricted Access');
             <th>Valor Executado</th>
             <th>Honorários 7%</th>
             <th>Valor Beneficiário</th>
-            <th width="20%">Publicado em</th>
         </tr>
         </thead>
         <tbody>
@@ -79,12 +77,11 @@ defined('_JEXEC') or die('Restricted Access');
                     <td><?php echo 'R$ ' . number_format($row->valor_executado, 2, ",", "."); ?></td>
                     <td><?php echo 'R$ ' . number_format($row->valor_honorario, 2, ",", "."); ?></td>
                     <td><?php echo 'R$ ' . number_format($row->valor_beneficiario, 2, ",", "."); ?></td>
-                    <td><?php echo JHtml::_('date', $row->publicado_em, JText::_('DATE_FORMAT_LC4')); ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="6">Nenhum processo</td>
+                <td colspan="5">Nenhum cálculo</td>
             </tr>
         <?php endif; ?>
         </tbody>

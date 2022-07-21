@@ -8,147 +8,170 @@ use Joomla\Utilities\ArrayHelper;
 class JuridicoControllerProcesso extends JControllerAdmin
 {
 
-	private $processos = [];
+    private $processos = [];
+    private $errors = [];
+    private $countSucess = 0;
 
-	/**
-	 * Process file import with process
-	 */
-	public function import()
-	{
-		$this->checkToken();
+    /**
+     * Process file import with process
+     */
+    public function import()
+    {
+        $application = JFactory::getApplication();
+        $this->checkToken();
 
-		try {
-			$this->validateImport();
-			$this->registerItem();
+        try {
+            $this->validateImport();
+            $this->registerItem();
 
-			$this->setMessage(sprintf("%s processos importados com sucesso.", count($this->processos)));
-			return $this->setRedirect(\JRoute::_('index.php?option=com_juridico&view=importacao', false));
-		} catch (Exception $e) {
-			$this->setMessage($e->getMessage(), $e->getCode() == 0 ? 'Error' : 'Warning');
-			return $this->setRedirect(\JRoute::_('index.php?option=com_juridico&view=importacao&layout=processamento', false));
-		}
-	}
+            $application->enqueueMessage(sprintf("%s processos importados com sucesso.", $this->countSucess));
 
-	/**
-	 * Open file CSV
-	 */
-	private function file()
-	{
-		if (count($this->processos)) {
-			return;
-		}
+            if (count($this->errors)) {
+                $application->enqueueMessage($this->getMessageError(), 'warning');
+            }
 
-		$file = $_FILES['file'];
+            return $this->setRedirect(\JRoute::_('index.php?option=com_juridico&view=importacao', false));
+        } catch (Exception $e) {
+            $application->enqueueMessage($e->getMessage(), $e->getCode() == 0 ? 'Error' : 'Warning');
+            return $this->setRedirect(\JRoute::_('index.php?option=com_juridico&view=importacao&layout=processamento', false));
+        }
+    }
 
-		if (!$file || $file['error'] != UPLOAD_ERR_OK) {
-			throw new Exception('Obrigatório informar um documento no formato CSV, separado por `ponto e vírgula` (;).');
-		}
+    private function getMessageError() {
+        if (!empty($this->errors)) {
+            $message = '<ul><li>';
+            $message .= implode('</li><li>', $this->errors);
+            $message .= '</li></ul>';
 
-		if (!$file || $file['type'] != 'text/csv') {
-			return false;
-		}
+            return $message;
+        }
 
-		$handler = fopen($file['tmp_name'], "r");
+        return null;
+    }
 
-		$i = 0;
-		while (($data = fgetcsv($handler, 0, ";")) !== FALSE) {
-			if ($i != 0) {
-				$data[0] = preg_replace( '/[^0-9]/', '', $data[0]);
-				$data[0] = str_pad($data[0], 11, '0', STR_PAD_LEFT);
-			}
+    /**
+     * Open file CSV
+     */
+    private function file()
+    {
+        if (count($this->processos)) {
+            return;
+        }
 
-			$this->processos[] = $data;
-			$i++;
-		}
+        $file = $_FILES['file'];
 
-		fclose($handler);
+        if (!$file || $file['error'] != UPLOAD_ERR_OK) {
+            throw new Exception('Obrigatório informar um documento no formato CSV, separado por `ponto e vírgula` (;).');
+        }
 
-		unset($this->processos[0]);
-	}
+        if (!$file || $file['type'] != 'text/csv') {
+            return false;
+        }
 
-	/**
-	 * Check all validates for import
-	 */
-	private function validateImport()
-	{
-		$this->file();
+        $handler = fopen($file['tmp_name'], "r");
 
-		if (!count($this->processos)) {
-			throw new Exception('Nenhum registro a ser processado.', 400);
-		}
+        $i = 0;
+        while (($data = fgetcsv($handler, 0, ";")) !== FALSE) {
+            if ($i != 0) {
+                $data[0] = preg_replace( '/[^0-9]/', '', $data[0]);
+                $data[0] = str_pad($data[0], 11, '0', STR_PAD_LEFT);
+            }
 
-		$this->validateTotalColumns();
-		$this->validateItemColumns();
-	}
+            $this->processos[] = $data;
+            $i++;
+        }
 
-	/**
-	 * Register item process
-	 */
-	private function registerItem()
-	{
-		$model = $this->getModel();
+        fclose($handler);
 
-		foreach ($this->processos as $processo) {
-			$model->syncronize($processo);
-		}
-	}
+        unset($this->processos[0]);
+    }
 
-	/**
-	 * Validate count columns
-	 */
-	private function validateTotalColumns()
-	{
-		if (count($this->processos[1]) < 6) {
-			throw new Exception('Colunas do arquivo inválido. O arquivo deve conter 7 colunas [CPF; Nº AÇÃO; NOME AÇÃO; VALOR EXECUTADO; VALOR HONORÁRIOS; VALOR BENEFICIÁRIO; ATIVO]');
-		}
-	}
+    /**
+     * Check all validates for import
+     */
+    private function validateImport()
+    {
+        $this->file();
 
-	/**
-	 * Validate item to column
-	 */
-	private function validateItemColumns()
-	{
-		$model = $this->getModel();
+        if (!count($this->processos)) {
+            throw new Exception('Nenhum registro a ser processado.', 400);
+        }
 
-		unset($this->processos[0]);
-		$errors = [];
+        $this->validateTotalColumns();
+        $this->validateItemColumns();
+    }
 
-		foreach ($this->processos as $key => $processo) {
-			$index = $key + 1;
+    /**
+     * Register item process
+     */
+    private function registerItem()
+    {
+        $model = $this->getModel();
 
-			if (empty($processo[0])) {
-				$errors[] = sprintf("Linha: %s, coluna: CPF não preenchida.", $index);
-			}
-			if (empty($processo[1])) {
-				$errors[] = sprintf("Linha: %s, coluna: Nº da Ação não preenchida.", $index);
-			}
-			if (empty($processo[2])) {
-				$errors[] = sprintf("Linha: %s, coluna: Nome da Ação não preenchida.", $index);
-			}
+        foreach ($this->processos as $processo) {
+            if (key_exists('error', $processo)) {
+                continue;
+            }
+
+            $model->syncronize($processo);
+            $this->countSucess++;
+        }
+    }
+
+    /**
+     * Validate count columns
+     */
+    private function validateTotalColumns()
+    {
+        if (count($this->processos[1]) < 6) {
+            throw new Exception('Colunas do arquivo inválido. O arquivo deve conter 7 colunas [CPF; Nº AÇÃO; NOME AÇÃO; VALOR EXECUTADO; VALOR HONORÁRIOS; VALOR BENEFICIÁRIO]', 500);
+        }
+    }
+
+    /**
+     * Validate item to column
+     */
+    private function validateItemColumns()
+    {
+        $model = $this->getModel();
+
+        unset($this->processos[0]);
+
+        foreach ($this->processos as $key => &$processo) {
+            $index = $key + 1;
+
+            if (empty($processo[0])) {
+                $this->errors[] = sprintf("Linha: %s, coluna: CPF não preenchida.", $index);
+                $processo['error'] = true;
+            }
+            if (empty($processo[1])) {
+                $this->errors[] = sprintf("Linha: %s, coluna: Nº da Ação não preenchida.", $index);
+                $processo['error'] = true;
+            }
+            if (empty($processo[2])) {
+                $this->errors[] = sprintf("Linha: %s, coluna: Nome da Ação não preenchida.", $index);
+                $processo['error'] = true;
+            }
             if (empty($processo[3])) {
-                $errors[] = sprintf("Linha: %s, coluna: Valor Executado não preenchido.", $index);
+                $this->errors[] = sprintf("Linha: %s, coluna: Valor Executado não preenchido.", $index);
+                $processo['error'] = true;
             }
             if (empty($processo[4])) {
-                $errors[] = sprintf("Linha: %s, coluna: Valor dos Honorários não preenchido.", $index);
+                $this->errors[] = sprintf("Linha: %s, coluna: Valor dos Honorários não preenchido.", $index);
+                $processo['error'] = true;
             }
             if (empty($processo[5])) {
-                $errors[] = sprintf("Linha: %s, coluna: Valor do Beneficiário não preenchido.", $index);
+                $this->errors[] = sprintf("Linha: %s, coluna: Valor do Beneficiário não preenchido.", $index);
+                $processo['error'] = true;
             }
-			if (!$model->hasUsuario($processo[0])) {
-				$errors[] = sprintf("Linha: %s, coluna: CPF: %s não está cadastrado no site, veja com o Administrativo.", $index, $processo[0]);
-			}
-		}
+            if (!$model->hasUsuario($processo[0])) {
+                $this->errors[] = sprintf("Linha: %s, coluna: CPF: %s não está cadastrado no site, veja com o Administrativo.", $index, $processo[0]);
+                $processo['error'] = true;
+            }
+        }
+    }
 
-		if (!empty($errors)) {
-			$message = '<ul><li>';
-			$message .= implode('</li><li>', $errors);
-			$message .= '</li></ul>';
-
-			throw new Exception($message, 400);
-		}
-	}
-
-	public function getModel($name = 'Processos', $prefix = 'JuridicoModel', $config = array('ignore_request' => true))
+    public function getModel($name = 'Processos', $prefix = 'JuridicoModel', $config = array('ignore_request' => true))
     {
         return parent::getModel($name, $prefix, $config);
     }
