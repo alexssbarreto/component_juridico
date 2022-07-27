@@ -109,10 +109,6 @@ class JuridicoControllerProcesso extends JControllerAdmin
         $model = $this->getModel();
 
         foreach ($this->processos as $processo) {
-            if (key_exists('error', $processo)) {
-                continue;
-            }
-
             $model->syncronize($processo);
             $this->countSucess++;
         }

@@ -81,7 +81,7 @@ defined('_JEXEC') or die('Restricted Access');
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="5">Nenhum cálculo</td>
+                <td colspan="5">Não há cálculos disponíveis.</td>
             </tr>
         <?php endif; ?>
         </tbody>
